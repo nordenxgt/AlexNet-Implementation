@@ -57,13 +57,3 @@ class AlexNet(nn.Module):
         x = self.fc2(x)
         x = self.fc3(x)
         return x
-
-def main():
-    from torchinfo import summary
-    model = AlexNet(3, 1)
-    # print(model)
-    summary(model, input_size=[1, 3, 224, 224])
-
-if __name__ == "__main__":
-
-    main()
