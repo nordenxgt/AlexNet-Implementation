@@ -14,10 +14,10 @@ class ConvBlock(nn.Module):
         super().__init__()
         layers = []
         layers.append(nn.Conv2d(in_channels, out_channels, kernel_size=kernal_size, padding=padding, stride=stride))
+        layers.append(nn.ReLU())
         if norm_pool: 
             layers.append(nn.LocalResponseNorm(size=5, alpha=1e-4, beta=0.75, k=2))
             layers.append(nn.MaxPool2d(kernel_size=3, stride=2))
-        layers.append(nn.ReLU())
         self.conv_block = nn.Sequential(*layers)
     
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -27,8 +27,9 @@ class LinearBlock(nn.Module):
     def __init__(self, in_features: int, out_features: int, dropout: bool = True) -> None:
         super().__init__()
         layers = []
-        layers.append(nn.Linear(in_features, out_features))
         if dropout: layers.append(nn.Dropout(p=0.5))
+        layers.append(nn.Linear(in_features, out_features))
+        layers.append(nn.ReLU())
         self.fc = nn.Sequential(*layers)
     
     def forward(self, x: torch.Tensor) -> torch.Tensor:
