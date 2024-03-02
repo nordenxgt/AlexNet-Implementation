@@ -13,8 +13,9 @@ def main(epochs: int, in_channels: int, num_classes: int):
     model = AlexNet(in_channels, num_classes)
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    lr = 1e-3
+    lr = 1e-2
     optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=0.9, weight_decay=0.0005)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.1)
 
     train_dataloader, test_dataloader = dataloader()
 
@@ -35,6 +36,7 @@ def main(epochs: int, in_channels: int, num_classes: int):
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+        scheduler.step()
         
         if epoch % 10 == 0:
             test_loss, test_acc = 0, 0
@@ -63,7 +65,7 @@ def main(epochs: int, in_channels: int, num_classes: int):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train Script")
-    parser.add_argument("--epochs", type=int, default=10)
+    parser.add_argument("--epochs", type=int, default=90)
     parser.add_argument("--in_channels", type=int)
     parser.add_argument("--num_classes", type=int)
     args = parser.parse_args()
