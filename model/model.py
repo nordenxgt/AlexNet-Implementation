@@ -7,13 +7,13 @@ class ConvBlock(nn.Module):
         in_channels: int, 
         out_channels: int, 
         kernal_size: int, 
-        padding: int = 1, 
         stride: int = 1,
+        padding: int = 1, 
         norm_pool: bool = False, 
     ) -> None:
         super().__init__()
         layers = []
-        layers.append(nn.Conv2d(in_channels, out_channels, kernel_size=kernal_size, padding=padding, stride=stride))
+        layers.append(nn.Conv2d(in_channels, out_channels, kernel_size=kernal_size, stride=stride, padding=padding))
         layers.append(nn.ReLU())
         if norm_pool: 
             layers.append(nn.LocalResponseNorm(size=5, alpha=1e-4, beta=0.75, k=2))
@@ -38,7 +38,7 @@ class LinearBlock(nn.Module):
 class AlexNet(nn.Module):
     def __init__(self, in_channels: int, num_classes: int) -> None:
         super().__init__()
-        self.conv1 = ConvBlock(in_channels, 96, kernal_size=11, padding=2, stride=4, norm_pool=True)
+        self.conv1 = ConvBlock(in_channels, 96, kernal_size=11, stride=4, padding=2, norm_pool=True)
         self.conv2 = ConvBlock(96, 256, kernal_size=5, padding=2, norm_pool=True)
         self.conv3 = ConvBlock(256, 384, kernal_size=3)
         self.conv4 = ConvBlock(384, 384, kernal_size=3)
@@ -47,6 +47,14 @@ class AlexNet(nn.Module):
         self.fc2 = LinearBlock(4096, 4096)
         self.fc3 = LinearBlock(4096, num_classes, dropout=False)
 
+        self.init_weights()
+    
+    def init_weights(self):
+        for i, m in enumerate(self.modules):
+            if isinstance(m, nn.Conv2d) and isinstance(m, nn.Linear):
+                nn.init.normal_(m.weight, 0, 0.01)
+            nn.init.constant_(m.bias, 0 if i == 0 or i == 2 else 1)
+            
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.conv1(x)
         x = self.conv2(x)
