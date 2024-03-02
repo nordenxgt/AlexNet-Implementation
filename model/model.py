@@ -50,10 +50,12 @@ class AlexNet(nn.Module):
         self.init_weights()
     
     def init_weights(self):
-        for i, m in enumerate(self.modules):
-            if isinstance(m, nn.Conv2d) and isinstance(m, nn.Linear):
+        layer = 1
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
                 nn.init.normal_(m.weight, 0, 0.01)
-            nn.init.constant_(m.bias, 0 if i == 0 or i == 2 else 1)
+                nn.init.constant_(m.bias, 0 if layer == 1 or layer == 3 else 1)
+                layer += 1
             
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.conv1(x)
