@@ -6,7 +6,7 @@ import torch.nn.functional as F
 from tqdm import tqdm
 
 from model import AlexNet
-from data_preprocessing import dataloader
+from dataloader import dataloader
 from utils import plot_loss_accuracy, calculate_accuracy
 
 def main(epochs: int, in_channels: int, num_classes: int):
