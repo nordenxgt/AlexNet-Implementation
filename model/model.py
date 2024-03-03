@@ -47,9 +47,9 @@ class AlexNet(nn.Module):
         self.fc2 = LinearBlock(4096, 4096)
         self.fc3 = LinearBlock(4096, num_classes, dropout=False)
 
-        self.init_weights()
+        self._init_weights()
     
-    def init_weights(self):
+    def _init_weights(self):
         layer = 1
         for m in self.modules():
             if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
