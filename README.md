@@ -24,7 +24,7 @@ python info.py
 
 ## Usage
 
-Before running the script, place your data directory location for both train and test data in `root_dir="{DIR}"` here at [dataloader.py](data_preprocessing/dataloader.py)
+Before running the script, place your data directory location for both train and test data in `root_dir="{DIR}"` here at [dataloader.py](./dataloader/dataloader.py)
 
 ```sh
 python train.py --epochs 90 --in_channels 3 --num_classes 1000
